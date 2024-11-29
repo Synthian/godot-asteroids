@@ -1,0 +1,27 @@
+[gd_scene load_steps=6 format=3 uid="uid://bf65popm1pclg"]
+
+[ext_resource type="Script" path="res://large_asteroid.gd" id="1_0h5xy"]
+[ext_resource type="Texture2D" uid="uid://bwfroe81u67v5" path="res://sprites/asteroid_large1.png" id="2_3r81m"]
+[ext_resource type="Script" path="res://edge_component.gd" id="3_63skp"]
+[ext_resource type="Script" path="res://velocity_component.gd" id="4_12up2"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6ndhr"]
+radius = 55.0
+
+[node name="LargeAsteroid" type="Area2D"]
+collision_layer = 2
+collision_mask = 4
+script = ExtResource("1_0h5xy")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_3r81m")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_6ndhr")
+
+[node name="EdgeComponent" type="Node2D" parent="."]
+script = ExtResource("3_63skp")
+
+[node name="VelocityComponent" type="Node" parent="."]
+script = ExtResource("4_12up2")
+spinVelocity = 3.0
