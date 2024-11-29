@@ -21,7 +21,7 @@ func _process(delta: float) -> void:
 	
 	if Input.is_action_just_pressed("shoot"):
 		var bullet: Bullet = bulletScene.instantiate()
-		bullet.position = position
+		bullet.position = $GunPosition.global_position
 		bullet.rotation = rotation
 		bullet.impartedVelocity = $VelocityComponent.linearVelocity
 		add_sibling(bullet)
