@@ -1,21 +1,43 @@
-[gd_scene load_steps=6 format=3 uid="uid://bf65popm1pclg"]
+[gd_scene load_steps=9 format=3 uid="uid://bf65popm1pclg"]
 
-[ext_resource type="Script" path="res://large_asteroid.gd" id="1_0h5xy"]
+[ext_resource type="Script" path="res://asteroid.gd" id="1_5r683"]
 [ext_resource type="Texture2D" uid="uid://bwfroe81u67v5" path="res://sprites/asteroid_large1.png" id="2_3r81m"]
 [ext_resource type="Script" path="res://edge_component.gd" id="3_63skp"]
+[ext_resource type="Texture2D" uid="uid://d2ryqmnwm6xsp" path="res://sprites/asteroid_large2.png" id="3_bvght"]
 [ext_resource type="Script" path="res://velocity_component.gd" id="4_12up2"]
+[ext_resource type="Texture2D" uid="uid://dg46ajqe8k1rv" path="res://sprites/asteroid_large3.png" id="4_osdul"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jb8t2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_3r81m")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_bvght")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_osdul")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_6ndhr"]
 radius = 55.0
 
-[node name="LargeAsteroid" type="Area2D"]
-scale = Vector2(0.5, 0.5)
+[node name="LargeAsteroid" type="Area2D" node_paths=PackedStringArray("velocityComponent", "edgeComponent", "animatedSprite")]
 collision_layer = 2
 collision_mask = 4
-script = ExtResource("1_0h5xy")
+script = ExtResource("1_5r683")
+velocityComponent = NodePath("VelocityComponent")
+edgeComponent = NodePath("EdgeComponent")
+animatedSprite = NodePath("AnimatedSprite2D")
+maxSpeed = 200
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_3r81m")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_jb8t2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_6ndhr")
@@ -26,3 +48,5 @@ script = ExtResource("3_63skp")
 [node name="VelocityComponent" type="Node" parent="."]
 script = ExtResource("4_12up2")
 spinVelocity = 3.0
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

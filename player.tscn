@@ -1,20 +1,40 @@
-[gd_scene load_steps=6 format=3 uid="uid://drhd4rqy7o2in"]
+[gd_scene load_steps=8 format=3 uid="uid://drhd4rqy7o2in"]
 
 [ext_resource type="Script" path="res://edge_component.gd" id="1_5877a"]
 [ext_resource type="Script" path="res://player.gd" id="1_fxocp"]
 [ext_resource type="PackedScene" uid="uid://bu34kpbmg1nlk" path="res://bullet.tscn" id="2_uemqq"]
 [ext_resource type="Texture2D" uid="uid://bw607ayapj0nw" path="res://sprites/ship.png" id="3_e0ol8"]
+[ext_resource type="Texture2D" uid="uid://jcihueuebf60" path="res://sprites/ship_boost.png" id="4_3jq6e"]
 [ext_resource type="Script" path="res://velocity_component.gd" id="4_mlbe4"]
 
+[sub_resource type="SpriteFrames" id="SpriteFrames_01lou"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("4_3jq6e")
+}],
+"loop": true,
+"name": &"boost",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("3_e0ol8")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
 [node name="Player" type="Area2D"]
-scale = Vector2(0.5, 0.5)
 collision_mask = 2
 script = ExtResource("1_fxocp")
 bulletScene = ExtResource("2_uemqq")
 metadata/_edit_group_ = true
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("3_e0ol8")
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_01lou")
+animation = &"boost"
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(28, 0, -24, 16, -24, -16)
@@ -24,8 +44,9 @@ script = ExtResource("1_5877a")
 
 [node name="VelocityComponent" type="Node" parent="."]
 script = ExtResource("4_mlbe4")
-maxSpeed = 300.0
-acceleration = 300.0
+maxSpeed = 400.0
+acceleration = 400.0
+friction = 30.0
 
 [node name="GunPosition" type="Marker2D" parent="."]
 position = Vector2(24, 0)

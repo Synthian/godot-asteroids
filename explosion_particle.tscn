@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://bu3hfgweab7v6"]
+
+[ext_resource type="Script" path="res://explosion_particle.gd" id="1_iaevg"]
+[ext_resource type="Texture2D" uid="uid://q26fgdnq8x2d" path="res://sprites/circle6.png" id="1_jt210"]
+[ext_resource type="Script" path="res://velocity_component.gd" id="3_lvoe7"]
+
+[node name="ExplosionParticle" type="Node2D"]
+script = ExtResource("1_iaevg")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("1_jt210")
+
+[node name="VelocityComponent" type="Node" parent="."]
+script = ExtResource("3_lvoe7")
+maxSpeed = 1000.0
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="fadeOut"]

@@ -1,0 +1,52 @@
+[gd_scene load_steps=9 format=3 uid="uid://dh77lx5d5carj"]
+
+[ext_resource type="Script" path="res://asteroid.gd" id="1_oyjk1"]
+[ext_resource type="Texture2D" uid="uid://bekt11tuv3ob0" path="res://sprites/asteroid_med1.png" id="2_3lqhf"]
+[ext_resource type="Texture2D" uid="uid://dkva0yau2y1h5" path="res://sprites/asteroid_med2.png" id="3_kse8k"]
+[ext_resource type="Texture2D" uid="uid://by43rj3wocew4" path="res://sprites/asteroid_med3.png" id="4_jj54q"]
+[ext_resource type="Script" path="res://edge_component.gd" id="5_lwi36"]
+[ext_resource type="Script" path="res://velocity_component.gd" id="6_aqmn6"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_jb8t2"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_3lqhf")
+}, {
+"duration": 1.0,
+"texture": ExtResource("3_kse8k")
+}, {
+"duration": 1.0,
+"texture": ExtResource("4_jj54q")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6ndhr"]
+radius = 28.0
+
+[node name="MediumAsteroid" type="Area2D" node_paths=PackedStringArray("velocityComponent", "edgeComponent", "animatedSprite")]
+collision_layer = 2
+collision_mask = 4
+script = ExtResource("1_oyjk1")
+velocityComponent = NodePath("VelocityComponent")
+edgeComponent = NodePath("EdgeComponent")
+animatedSprite = NodePath("AnimatedSprite2D")
+maxSpeed = 300
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_jb8t2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_6ndhr")
+
+[node name="EdgeComponent" type="Node2D" parent="."]
+script = ExtResource("5_lwi36")
+
+[node name="VelocityComponent" type="Node" parent="."]
+script = ExtResource("6_aqmn6")
+spinVelocity = 3.0
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

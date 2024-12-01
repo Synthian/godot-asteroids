@@ -3,6 +3,7 @@ class_name VelocityComponent
 
 @export var maxSpeed: float = INF # Pixels per second
 @export var acceleration: float = 0.0 # Pixels per second squared
+@export var friction: float = 0.0 # Pixels per second squared
 @export var spinVelocity: float = 0.0 # Radians per second (clockwise positive)
 
 var linearVelocity: Vector2 = Vector2(0.0, 0.0)
@@ -30,6 +31,9 @@ func accelerateInDirection(rads: float, delta: float) -> Vector2:
 
 # Executes linear movement
 func move(node: Node2D, delta: float) -> void:
+	var speed: float = linearVelocity.length() - friction * delta
+	speed = clamp(speed, 0, maxSpeed)
+	linearVelocity = linearVelocity.normalized() * speed
 	node.position += linearVelocity * delta
 
 ### SPIN ###

@@ -1,18 +1,18 @@
-[gd_scene load_steps=5 format=3 uid="uid://bu34kpbmg1nlk"]
+[gd_scene load_steps=6 format=3 uid="uid://bu34kpbmg1nlk"]
 
 [ext_resource type="Script" path="res://bullet.gd" id="1_dlevu"]
 [ext_resource type="Texture2D" uid="uid://dd41l5i31tldp" path="res://sprites/circle8.png" id="2_v15cx"]
 [ext_resource type="Script" path="res://velocity_component.gd" id="3_22krs"]
+[ext_resource type="Script" path="res://edge_component.gd" id="4_yo038"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_rrm25"]
 size = Vector2(8, 8)
 
 [node name="Bullet" type="Area2D"]
-scale = Vector2(0.5, 0.5)
 collision_layer = 4
 collision_mask = 0
 script = ExtResource("1_dlevu")
-speed = 300.0
+speed = 750.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_v15cx")
@@ -20,10 +20,14 @@ texture = ExtResource("2_v15cx")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_rrm25")
 
-[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
-rect = Rect2(-4, -4, 8, 8)
-
 [node name="VelocityComponent" type="Node" parent="."]
 script = ExtResource("3_22krs")
 
-[connection signal="screen_exited" from="VisibleOnScreenNotifier2D" to="." method="cull"]
+[node name="EdgeComponent" type="Node2D" parent="."]
+script = ExtResource("4_yo038")
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="Timer" to="." method="cull"]

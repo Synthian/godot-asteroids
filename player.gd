@@ -5,6 +5,8 @@ signal hit
 @export var bulletScene: PackedScene
 
 func _process(delta: float) -> void:
+	if !visible: return
+	
 	var spinVelocity: float = 0.0
 	if Input.is_action_pressed("move_right"):
 		spinVelocity += rotationSpeed
@@ -14,16 +16,19 @@ func _process(delta: float) -> void:
 	
 	if Input.is_action_pressed("boost"):
 		$VelocityComponent.accelerateInDirection(rotation, delta)
+		$AnimatedSprite2D.animation = "boost"
+	else:
+		$AnimatedSprite2D.animation = "default"
 	
 	$VelocityComponent.move(self, delta)
 	$VelocityComponent.spin(self, delta)
-	$EdgeComponent.wrap(self, $Sprite2D)
+	var spriteFrames: SpriteFrames = $AnimatedSprite2D.get_sprite_frames()
+	var texture: Texture2D = spriteFrames.get_frame_texture("default", 0)
+	$EdgeComponent.wrap(self, texture)
 	
 	if Input.is_action_just_pressed("shoot"):
 		var bullet: Bullet = bulletScene.instantiate()
-		bullet.position = $GunPosition.global_position
-		bullet.rotation = rotation
-		bullet.impartedVelocity = $VelocityComponent.linearVelocity
+		bullet.init($GunPosition.global_position, rotation, $VelocityComponent.linearVelocity)
 		add_sibling(bullet)
 
 func _on_area_entered(_body: Node2D) -> void:

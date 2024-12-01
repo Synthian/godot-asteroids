@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://cyd745u8ajkgn"]
+
+[ext_resource type="Script" path="res://explosion.gd" id="1_y7ies"]
+[ext_resource type="PackedScene" uid="uid://bu3hfgweab7v6" path="res://explosion_particle.tscn" id="2_etgcr"]
+
+[node name="Explosion" type="Node2D"]
+script = ExtResource("1_y7ies")
+particleScene = ExtResource("2_etgcr")
