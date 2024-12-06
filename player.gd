@@ -3,9 +3,13 @@ signal hit
 
 @export var rotationSpeed: float = 3 # Radians per second
 @export var bulletScene: PackedScene
+@export var explosionScene: PackedScene
+
+var alive := false
+var invincible := false
 
 func _process(delta: float) -> void:
-	if !visible: return
+	if !alive: return
 	
 	var spinVelocity: float = 0.0
 	if Input.is_action_pressed("move_right"):
@@ -30,13 +34,38 @@ func _process(delta: float) -> void:
 		var bullet: Bullet = bulletScene.instantiate()
 		bullet.init($GunPosition.global_position, rotation, $VelocityComponent.linearVelocity)
 		add_sibling(bullet)
+		
+		if (invincible):
+			invulnExpire()
+			$InvulnTimer.stop()
 
 func _on_area_entered(_body: Node2D) -> void:
-	hide()
-	hit.emit()
+	self.alive = false
+	visible = false
+	var explosion: DeathExplosion = explosionScene.instantiate()
+	explosion.init(position, rotation)
+	call_deferred("add_sibling", explosion)
 	$CollisionPolygon2D.set_deferred("disabled", true)
-	
-func start(pos: Vector2) -> void:
+	hit.emit()
+
+func start(pos: Vector2, iframes: bool) -> void:
+	alive = true
+	visible = true
 	position = pos
-	show()
-	$CollisionPolygon2D.disabled = false
+	rotation = 0
+	$VelocityComponent.linearVelocity = Vector2(0,0)
+	if iframes:
+		invincible = true
+		$BlinkTimer.start()
+		$InvulnTimer.start()
+	else:
+		$CollisionPolygon2D.set_deferred("disabled", false)
+
+func invulnExpire() -> void:
+	invincible = false
+	visible = true
+	$BlinkTimer.stop()
+	$CollisionPolygon2D.set_deferred("disabled", false)
+
+func blink() -> void:
+	visible = !visible

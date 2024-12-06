@@ -37,6 +37,7 @@ animatedSprite = NodePath("AnimatedSprite2D")
 maxSpeed = 300
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+self_modulate = Color(2, 2, 2, 1)
 sprite_frames = SubResource("SpriteFrames_jb8t2")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

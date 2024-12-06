@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://bgp3j0qkilgfq"]
+[gd_scene load_steps=10 format=3 uid="uid://bgp3j0qkilgfq"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_cdvds"]
 [ext_resource type="PackedScene" uid="uid://drhd4rqy7o2in" path="res://player.tscn" id="1_ii6b8"]
@@ -6,15 +6,44 @@
 [ext_resource type="PackedScene" uid="uid://dh77lx5d5carj" path="res://medium_asteroid.tscn" id="3_a026w"]
 [ext_resource type="PackedScene" uid="uid://dv5gsi1wujces" path="res://small_asteroid.tscn" id="4_bvvbe"]
 [ext_resource type="PackedScene" uid="uid://cyd745u8ajkgn" path="res://explosion.tscn" id="5_hw1jj"]
+[ext_resource type="PackedScene" uid="uid://m2bcuvn6uh3g" path="res://death_explosion.tscn" id="6_8svuv"]
+[ext_resource type="PackedScene" uid="uid://4t34ma5alhnn" path="res://ui.tscn" id="8_h0iki"]
+
+[sub_resource type="Environment" id="Environment_ps3ec"]
+background_mode = 3
+glow_enabled = true
+glow_intensity = 0.3
+glow_strength = 0.8
+glow_blend_mode = 1
 
 [node name="Main" type="Node"]
 script = ExtResource("1_cdvds")
 largeAsteroid = ExtResource("3_34tli")
 mediumAsteroid = ExtResource("3_a026w")
 smallAsteroid = ExtResource("4_bvvbe")
-explosionScene = ExtResource("5_hw1jj")
+asteroidExplosionScene = ExtResource("5_hw1jj")
+playerExplosionScene = ExtResource("6_8svuv")
 
 [node name="Player" parent="." instance=ExtResource("1_ii6b8")]
+visible = false
 
 [node name="StartPosition" type="Marker2D" parent="."]
 position = Vector2(720, 540)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_ps3ec")
+
+[node name="UI" parent="." instance=ExtResource("8_h0iki")]
+process_mode = 3
+
+[node name="ReadyTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
+[node name="RespawnTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="hit" from="Player" to="." method="playerDeath"]
+[connection signal="start" from="UI" to="." method="newGame"]
+[connection signal="timeout" from="ReadyTimer" to="." method="startLevel"]
+[connection signal="timeout" from="RespawnTimer" to="." method="respawn"]

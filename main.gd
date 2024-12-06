@@ -1,17 +1,44 @@
 extends Node
 
+static var STARTING_ASTEROIDS := 8
+static var STARTING_LIVES := 3
+static var EXPLOSION_SIZE: Dictionary = {
+	"LARGE": 70,
+	"MEDIUM": 50,
+	"SMALL": 30
+}
+
 @export var largeAsteroid: PackedScene
 @export var mediumAsteroid: PackedScene
 @export var smallAsteroid: PackedScene
-@export var explosionScene: PackedScene
+@export var asteroidExplosionScene: PackedScene
+@export var playerExplosionScene: PackedScene
+
+var level := 0
+var lives := STARTING_LIVES
 
 func _ready() -> void:
 	randomize()
-	newGame()
+	get_tree().paused = true
+	openMainMenu()
+
+func openMainMenu() -> void:
+	$UI.setTitleVisibility(true)
 
 func newGame() -> void:
-	$Player.start($StartPosition.position)
-	for x in 8:
+	level = 1
+	get_tree().paused = false
+	$UI.setGetReadyVisibility(true)
+	$UI.setLifeCount(3)
+	$ReadyTimer.start()
+
+func startLevel() -> void:
+	$UI.setGetReadyVisibility(false)
+	initLevel()
+	$Player.start($StartPosition.position, false)
+
+func initLevel() -> void:
+	for x in STARTING_ASTEROIDS:
 		var asteroid: Asteroid = largeAsteroid.instantiate()
 		var randomPosition: Vector2 = $StartPosition.position + Vector2.from_angle(randf_range(0, TAU)) * 500
 		var randomDirection := randf_range(0 , TAU)
@@ -20,6 +47,11 @@ func newGame() -> void:
 		asteroid.add_to_group("asteroids")
 		add_child(asteroid)
 
+#func _process(_delta: float) -> void:
+	# var asteroids := get_tree().get_nodes_in_group("asteroids")
+	# if asteroids.size() == 0:
+		# call_deferred("newGame")
+
 func largeAsteroidHit(lgAsteroid: Asteroid) -> void:
 	for x in 2:
 		var mdAsteroid: Asteroid = mediumAsteroid.instantiate()
@@ -27,7 +59,7 @@ func largeAsteroidHit(lgAsteroid: Asteroid) -> void:
 		mdAsteroid.connect("hit", mediumAsteroidHit)
 		mdAsteroid.add_to_group("asteroids")
 		call_deferred("add_child", mdAsteroid)
-	explode(lgAsteroid.position, 70)
+	explodeAsteroid(lgAsteroid.position, EXPLOSION_SIZE["LARGE"])
 	lgAsteroid.queue_free()
 	
 func mediumAsteroidHit(mdAsteroid: Asteroid) -> void:
@@ -37,19 +69,23 @@ func mediumAsteroidHit(mdAsteroid: Asteroid) -> void:
 		smAsteroid.connect("hit", smallAsteroidHit)
 		smAsteroid.add_to_group("asteroids")
 		call_deferred("add_child", smAsteroid)
-	explode(mdAsteroid.position, 50)
+	explodeAsteroid(mdAsteroid.position, EXPLOSION_SIZE["MEDIUM"])
 	mdAsteroid.queue_free()
 	
 func smallAsteroidHit(smAsteroid: Asteroid) -> void:
-	explode(smAsteroid.position, 30)
+	explodeAsteroid(smAsteroid.position, EXPLOSION_SIZE["SMALL"])
 	smAsteroid.queue_free()
-	
-	var asteroids: Array[Node] = get_tree().get_nodes_in_group("asteroids")
-	if asteroids.size() == 1:
-		call_deferred("newGame")
-		
-func explode(position: Vector2, size: int) -> void:
-	var explosion: Explosion = explosionScene.instantiate()
+
+func explodeAsteroid(position: Vector2, size: int) -> void:
+	var explosion: Explosion = asteroidExplosionScene.instantiate()
 	explosion.init(position, size)
 	call_deferred("add_child", explosion)
 	
+func playerDeath() -> void:
+	lives -= 1
+	$UI.setLifeCount(lives)
+	if (lives > 0):
+		$RespawnTimer.start()
+
+func respawn() -> void:
+	$Player.start($StartPosition.position, true)

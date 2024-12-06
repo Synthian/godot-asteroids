@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://drhd4rqy7o2in"]
+[gd_scene load_steps=9 format=3 uid="uid://drhd4rqy7o2in"]
 
 [ext_resource type="Script" path="res://edge_component.gd" id="1_5877a"]
 [ext_resource type="Script" path="res://player.gd" id="1_fxocp"]
 [ext_resource type="PackedScene" uid="uid://bu34kpbmg1nlk" path="res://bullet.tscn" id="2_uemqq"]
 [ext_resource type="Texture2D" uid="uid://bw607ayapj0nw" path="res://sprites/ship.png" id="3_e0ol8"]
+[ext_resource type="PackedScene" uid="uid://m2bcuvn6uh3g" path="res://death_explosion.tscn" id="3_tm0p0"]
 [ext_resource type="Texture2D" uid="uid://jcihueuebf60" path="res://sprites/ship_boost.png" id="4_3jq6e"]
 [ext_resource type="Script" path="res://velocity_component.gd" id="4_mlbe4"]
 
@@ -30,9 +31,11 @@ animations = [{
 collision_mask = 2
 script = ExtResource("1_fxocp")
 bulletScene = ExtResource("2_uemqq")
+explosionScene = ExtResource("3_tm0p0")
 metadata/_edit_group_ = true
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+self_modulate = Color(0, 2, 0, 1)
 sprite_frames = SubResource("SpriteFrames_01lou")
 animation = &"boost"
 
@@ -51,4 +54,13 @@ friction = 30.0
 [node name="GunPosition" type="Marker2D" parent="."]
 position = Vector2(24, 0)
 
+[node name="InvulnTimer" type="Timer" parent="."]
+wait_time = 3.0
+one_shot = true
+
+[node name="BlinkTimer" type="Timer" parent="."]
+wait_time = 0.15
+
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]
+[connection signal="timeout" from="InvulnTimer" to="." method="invulnExpire"]
+[connection signal="timeout" from="BlinkTimer" to="." method="blink"]
