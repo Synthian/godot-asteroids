@@ -61,6 +61,11 @@ func start(pos: Vector2, iframes: bool) -> void:
 	else:
 		$CollisionPolygon2D.set_deferred("disabled", false)
 
+func disable() -> void:
+	$CollisionPolygon2D.set_deferred("disabled", true)
+	alive = false
+	visible = false
+
 func invulnExpire() -> void:
 	invincible = false
 	visible = true

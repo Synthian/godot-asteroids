@@ -36,6 +36,10 @@ environment = SubResource("Environment_ps3ec")
 [node name="UI" parent="." instance=ExtResource("8_h0iki")]
 process_mode = 3
 
+[node name="LevelFinishTimer" type="Timer" parent="."]
+wait_time = 2.0
+one_shot = true
+
 [node name="ReadyTimer" type="Timer" parent="."]
 wait_time = 2.0
 one_shot = true
@@ -44,6 +48,8 @@ one_shot = true
 one_shot = true
 
 [connection signal="hit" from="Player" to="." method="playerDeath"]
+[connection signal="gameOverFinish" from="UI" to="." method="openMainMenu"]
 [connection signal="start" from="UI" to="." method="newGame"]
+[connection signal="timeout" from="LevelFinishTimer" to="." method="newLevel"]
 [connection signal="timeout" from="ReadyTimer" to="." method="startLevel"]
 [connection signal="timeout" from="RespawnTimer" to="." method="respawn"]

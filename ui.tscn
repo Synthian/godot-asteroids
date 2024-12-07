@@ -1,12 +1,42 @@
 [gd_scene load_steps=4 format=3 uid="uid://4t34ma5alhnn"]
 
 [ext_resource type="Script" path="res://ui.gd" id="1_is03e"]
-[ext_resource type="FontFile" uid="uid://dmiq14qcov2c" path="res://Geo-Regular.ttf" id="1_n0co1"]
 [ext_resource type="Texture2D" uid="uid://5p56yrdtrnjp" path="res://sprites/life.png" id="2_m8k3v"]
+[ext_resource type="FontFile" uid="uid://dbmd5r02i231e" path="res://Silkscreen-Regular.ttf" id="3_rhjnl"]
 
 [node name="UI" type="CanvasLayer"]
 script = ExtResource("1_is03e")
 lifeTexture = ExtResource("2_m8k3v")
+
+[node name="GameOver" type="VBoxContainer" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -325.0
+offset_top = -97.0
+offset_right = 325.0
+offset_bottom = 97.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="GameOver"]
+visible = false
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_rhjnl")
+theme_override_font_sizes/font_size = 100
+text = "Game Over"
+horizontal_alignment = 1
+
+[node name="Instructions" type="Label" parent="GameOver"]
+visible = false
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_fonts/font = ExtResource("3_rhjnl")
+theme_override_font_sizes/font_size = 48
+text = "Press Space"
+horizontal_alignment = 1
 
 [node name="GetReady" type="Label" parent="."]
 visible = false
@@ -14,7 +44,7 @@ offset_left = 400.5
 offset_top = 461.5
 offset_right = 1039.5
 offset_bottom = 564.5
-theme_override_fonts/font = ExtResource("1_n0co1")
+theme_override_fonts/font = ExtResource("3_rhjnl")
 theme_override_font_sizes/font_size = 100
 text = "Get Ready"
 horizontal_alignment = 1
@@ -35,7 +65,7 @@ grow_vertical = 2
 
 [node name="Title" type="Label" parent="MainMenu"]
 layout_mode = 2
-theme_override_fonts/font = ExtResource("1_n0co1")
+theme_override_fonts/font = ExtResource("3_rhjnl")
 theme_override_font_sizes/font_size = 100
 text = "Godot Asteroids"
 horizontal_alignment = 1
@@ -43,13 +73,59 @@ horizontal_alignment = 1
 [node name="Instructions" type="Label" parent="MainMenu"]
 layout_mode = 2
 size_flags_vertical = 1
-theme_override_fonts/font = ExtResource("1_n0co1")
+theme_override_fonts/font = ExtResource("3_rhjnl")
 theme_override_font_sizes/font_size = 48
 text = "Press Space to Start"
 horizontal_alignment = 1
 
-[node name="Lives" type="HBoxContainer" parent="."]
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 50.0
-offset_bottom = 66.0
+[node name="LivesMargin" type="MarginContainer" parent="."]
+offset_right = 237.0
+offset_bottom = 65.0
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+
+[node name="Lives" type="HBoxContainer" parent="LivesMargin"]
+layout_mode = 2
+
+[node name="ScoreMargin" type="MarginContainer" parent="."]
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -116.5
+offset_top = -65.0
+offset_right = 116.5
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_constants/margin_bottom = 12
+
+[node name="Score" type="Label" parent="ScoreMargin"]
+visible = false
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_rhjnl")
+theme_override_font_sizes/font_size = 50
+horizontal_alignment = 1
+vertical_alignment = 2
+
+[node name="LevelMargin" type="MarginContainer" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -245.0
+offset_bottom = 65.0
+grow_horizontal = 0
+theme_override_constants/margin_right = 12
+
+[node name="Level" type="Label" parent="LevelMargin"]
+visible = false
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_rhjnl")
+theme_override_font_sizes/font_size = 50
+horizontal_alignment = 2
+
+[node name="GameOverTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[connection signal="timeout" from="GameOverTimer" to="." method="gameOverTimeout"]

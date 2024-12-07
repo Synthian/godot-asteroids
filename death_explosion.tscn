@@ -18,6 +18,7 @@ script = ExtResource("3_kcf1h")
 velocityComponent = NodePath("VelocityComponent")
 speed = 100
 direction = 1.5
+time = 1.5
 
 [node name="VelocityComponent" type="Node" parent="left_hull"]
 script = ExtResource("4_xxdch")
@@ -33,6 +34,7 @@ script = ExtResource("3_kcf1h")
 velocityComponent = NodePath("VelocityComponent")
 speed = 200
 direction = -1.0
+time = 2.0
 
 [node name="VelocityComponent" type="Node" parent="right_hull"]
 script = ExtResource("4_xxdch")
@@ -47,6 +49,7 @@ script = ExtResource("3_kcf1h")
 velocityComponent = NodePath("VelocityComponent")
 speed = 50
 direction = 3.0
+time = 1.75
 
 [node name="VelocityComponent" type="Node" parent="rear_hull"]
 script = ExtResource("4_xxdch")

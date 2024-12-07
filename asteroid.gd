@@ -3,12 +3,14 @@ class_name Asteroid
 
 signal hit
 
+static var LEVEL_MULTIPLIER := 0.1
+
 @export var velocityComponent: VelocityComponent
 @export var edgeComponent: EdgeComponent
 @export var animatedSprite: AnimatedSprite2D
 @export var maxSpeed: int
 
-func init(position: Vector2, initialDirection: float) -> void:
+func init(position: Vector2, initialDirection: float, level: int) -> void:
 	self.position = position
 	animatedSprite.frame = randi_range(0, 2)
 	
@@ -18,8 +20,9 @@ func init(position: Vector2, initialDirection: float) -> void:
 	velocityComponent.spinVelocity = spin
 	
 	# Set motion
-	var direction: float = randf_range(initialDirection - PI/2, initialDirection + PI/2)
-	var speed: int = randi_range(100, maxSpeed)
+	var direction := randf_range(initialDirection - PI/2, initialDirection + PI/2)
+	var mult := 1 + LEVEL_MULTIPLIER * level
+	var speed := randi_range(100, maxSpeed) * mult
 	velocityComponent.linearVelocity = Vector2.from_angle(direction) * speed
 
 func _process(delta: float) -> void: 
