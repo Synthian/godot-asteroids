@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bgp3j0qkilgfq"]
+[gd_scene load_steps=11 format=3 uid="uid://bgp3j0qkilgfq"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_cdvds"]
 [ext_resource type="PackedScene" uid="uid://drhd4rqy7o2in" path="res://player.tscn" id="1_ii6b8"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://dv5gsi1wujces" path="res://small_asteroid.tscn" id="4_bvvbe"]
 [ext_resource type="PackedScene" uid="uid://cyd745u8ajkgn" path="res://explosion.tscn" id="5_hw1jj"]
 [ext_resource type="PackedScene" uid="uid://m2bcuvn6uh3g" path="res://death_explosion.tscn" id="6_8svuv"]
+[ext_resource type="PackedScene" uid="uid://dw0ik3c6ox3c6" path="res://small_saucer.tscn" id="7_fi050"]
 [ext_resource type="PackedScene" uid="uid://4t34ma5alhnn" path="res://ui.tscn" id="8_h0iki"]
 
 [sub_resource type="Environment" id="Environment_ps3ec"]
@@ -23,6 +24,7 @@ mediumAsteroid = ExtResource("3_a026w")
 smallAsteroid = ExtResource("4_bvvbe")
 asteroidExplosionScene = ExtResource("5_hw1jj")
 playerExplosionScene = ExtResource("6_8svuv")
+smallSaucerScene = ExtResource("7_fi050")
 
 [node name="Player" parent="." instance=ExtResource("1_ii6b8")]
 visible = false

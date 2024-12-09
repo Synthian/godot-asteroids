@@ -32,7 +32,7 @@ func _process(delta: float) -> void:
 	
 	if Input.is_action_just_pressed("shoot"):
 		var bullet: Bullet = bulletScene.instantiate()
-		bullet.init($GunPosition.global_position, rotation, $VelocityComponent.linearVelocity)
+		bullet.initAlly($GunPosition.global_position, rotation, $VelocityComponent.linearVelocity)
 		add_sibling(bullet)
 		
 		if (invincible):

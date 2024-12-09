@@ -29,7 +29,7 @@ radius = 18.0
 
 [node name="SmallAsteroid" type="Area2D" node_paths=PackedStringArray("velocityComponent", "edgeComponent", "animatedSprite")]
 collision_layer = 2
-collision_mask = 4
+collision_mask = 12
 script = ExtResource("1_1cmr6")
 velocityComponent = NodePath("VelocityComponent")
 edgeComponent = NodePath("EdgeComponent")

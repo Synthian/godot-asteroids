@@ -1,7 +1,7 @@
 extends Area2D
 class_name Asteroid
 
-signal hit
+signal hit(asteroid: Asteroid)
 
 static var LEVEL_MULTIPLIER := 0.1
 

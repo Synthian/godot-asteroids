@@ -19,6 +19,7 @@ static var LEVEL_MULTIPLIER := 0.1
 @export var smallAsteroid: PackedScene
 @export var asteroidExplosionScene: PackedScene
 @export var playerExplosionScene: PackedScene
+@export var smallSaucerScene: PackedScene
 
 var level := -1
 var lives := STARTING_LIVES
@@ -59,6 +60,11 @@ func startLevel() -> void:
 	spawnAsteroids()
 
 func spawnAsteroids() -> void:
+	var saucer: SmallSaucer = smallSaucerScene.instantiate()
+	saucer.init($Player)
+	saucer.add_to_group("asteroids")
+	saucer.connect("hit", saucerHit)
+	add_child(saucer)
 	for x in STARTING_ASTEROIDS:
 		var asteroid: Asteroid = largeAsteroid.instantiate()
 		var randomPosition: Vector2 = $StartPosition.position + Vector2.from_angle(randf_range(0, TAU)) * 500
@@ -107,7 +113,15 @@ func explodeAsteroid(position: Vector2, size: int) -> void:
 	var explosion: Explosion = asteroidExplosionScene.instantiate()
 	explosion.init(position, size)
 	call_deferred("add_child", explosion)
-	
+
+func saucerHit(saucer: Area2D) -> void:
+	addPoints(100)
+	var explosion: Explosion = asteroidExplosionScene.instantiate()
+	explosion.init(saucer.position, 50)
+	explosion.setColor(Color.RED)
+	call_deferred("add_child", explosion)
+	saucer.queue_free()
+
 func playerDeath() -> void:
 	lives -= 1
 	$UI.setLifeCount(lives)

@@ -10,6 +10,9 @@ func init(position: Vector2, maxSpeed: int) -> void:
 	self.position = position
 	self.maxSpeed = maxSpeed
 
+func setColor(color: Color) -> void:
+	modulate = color
+
 func _ready() -> void:
 	for x in PARTICLE_COUNT:
 		var particle: ExplosionParticle = particleScene.instantiate()
