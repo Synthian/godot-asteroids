@@ -34,7 +34,7 @@ script = ExtResource("1_oyjk1")
 velocityComponent = NodePath("VelocityComponent")
 edgeComponent = NodePath("EdgeComponent")
 animatedSprite = NodePath("AnimatedSprite2D")
-maxSpeed = 300
+maxSpeed = 250
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 self_modulate = Color(2, 2, 2, 1)

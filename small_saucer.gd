@@ -13,6 +13,7 @@ enum Direction {LEFT, RIGHT}
 @export var bulletScene: PackedScene
 
 var player: Area2D
+var finishedInitialMovement := false
 
 @onready var screen_size: Vector2 = get_viewport_rect().size
 
@@ -34,9 +35,11 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	$VelocityComponent.move(self, delta)
-	$EdgeComponent.wrap(self, $Sprite2D.texture)
+	if finishedInitialMovement:
+		$EdgeComponent.wrap(self, $Sprite2D.texture)
 
 func changeDirection() -> void:
+	finishedInitialMovement = true
 	if player:
 		var direction := (player.position - position).normalized()
 		$VelocityComponent.linearVelocity = direction * $VelocityComponent.maxSpeed

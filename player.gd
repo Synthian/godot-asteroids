@@ -31,6 +31,7 @@ func _process(delta: float) -> void:
 	$EdgeComponent.wrap(self, texture)
 	
 	if Input.is_action_just_pressed("shoot"):
+		$BulletSound.play()
 		var bullet: Bullet = bulletScene.instantiate()
 		bullet.initAlly($GunPosition.global_position, rotation, $VelocityComponent.linearVelocity)
 		add_sibling(bullet)

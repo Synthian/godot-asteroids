@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://bgp3j0qkilgfq"]
+[gd_scene load_steps=13 format=3 uid="uid://bgp3j0qkilgfq"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_cdvds"]
 [ext_resource type="PackedScene" uid="uid://drhd4rqy7o2in" path="res://player.tscn" id="1_ii6b8"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://cyd745u8ajkgn" path="res://explosion.tscn" id="5_hw1jj"]
 [ext_resource type="PackedScene" uid="uid://m2bcuvn6uh3g" path="res://death_explosion.tscn" id="6_8svuv"]
 [ext_resource type="PackedScene" uid="uid://dw0ik3c6ox3c6" path="res://small_saucer.tscn" id="7_fi050"]
+[ext_resource type="PackedScene" uid="uid://cii6xqlach24o" path="res://large_saucer.tscn" id="8_dv6ew"]
 [ext_resource type="PackedScene" uid="uid://4t34ma5alhnn" path="res://ui.tscn" id="8_h0iki"]
 
 [sub_resource type="Environment" id="Environment_ps3ec"]
@@ -17,6 +18,12 @@ glow_intensity = 0.3
 glow_strength = 0.8
 glow_blend_mode = 1
 
+[sub_resource type="Curve2D" id="Curve2D_m8fry"]
+_data = {
+"points": PackedVector2Array(0, 0, 0, 0, -55, -36, 0, 0, 0, 0, 1495, -36, 0, 0, 0, 0, 1495, 1116, 0, 0, 0, 0, -55, 1116, 0, 0, 0, 0, -55, -36)
+}
+point_count = 5
+
 [node name="Main" type="Node"]
 script = ExtResource("1_cdvds")
 largeAsteroid = ExtResource("3_34tli")
@@ -25,6 +32,7 @@ smallAsteroid = ExtResource("4_bvvbe")
 asteroidExplosionScene = ExtResource("5_hw1jj")
 playerExplosionScene = ExtResource("6_8svuv")
 smallSaucerScene = ExtResource("7_fi050")
+largeSaucerScene = ExtResource("8_dv6ew")
 
 [node name="Player" parent="." instance=ExtResource("1_ii6b8")]
 visible = false
@@ -48,6 +56,12 @@ one_shot = true
 
 [node name="RespawnTimer" type="Timer" parent="."]
 one_shot = true
+
+[node name="SpawnPath" type="Path2D" parent="."]
+curve = SubResource("Curve2D_m8fry")
+
+[node name="SaucerSpawnLocation" type="PathFollow2D" parent="SpawnPath"]
+position = Vector2(-55, -36)
 
 [connection signal="hit" from="Player" to="." method="playerDeath"]
 [connection signal="gameOverFinish" from="UI" to="." method="openMainMenu"]

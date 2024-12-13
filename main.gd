@@ -1,6 +1,9 @@
 extends Node
 
-static var STARTING_ASTEROIDS := 6
+static var STARTING_ASTEROIDS := 2
+static var MAX_ASTEROIDS := 8
+static var ASTEROID_INCREMENT := 2
+static var SAUCER_KILL_REQ := 20
 static var STARTING_LIVES := 3
 static var EXPLOSION_SIZE: Dictionary = {
 	"LARGE": 70,
@@ -20,22 +23,34 @@ static var LEVEL_MULTIPLIER := 0.1
 @export var asteroidExplosionScene: PackedScene
 @export var playerExplosionScene: PackedScene
 @export var smallSaucerScene: PackedScene
+@export var largeSaucerScene: PackedScene
 
-var level := -1
-var lives := STARTING_LIVES
+var level := 0
 var score := 0
+var lives := STARTING_LIVES
 var gameActive := false
+
+var asteroidsKilledCurrentLevel := 0
 
 func _ready() -> void:
 	randomize()
 	openMainMenu()
 
+func _process(_delta: float) -> void:
+	var asteroids := get_tree().get_nodes_in_group("enemies")
+	if asteroids.size() == 0 && gameActive:
+		level += 1
+		$LevelFinishTimer.start()
+		$RespawnTimer.stop()
+		gameActive = false
+
 func openMainMenu() -> void:
 	$UI.setTitleVisibility(true)
 	$UI.setHudVisibility(false)
 	$Player.disable()
-	clearAsteroids()
-	spawnAsteroids()
+	clearEnemies()
+	spawnAsteroids(6)
+	spawnLargeSaucer()
 
 func newGame() -> void:
 	level = 0
@@ -47,7 +62,8 @@ func newGame() -> void:
 	newLevel()
 
 func newLevel() -> void:
-	clearAsteroids()
+	clearEnemies()
+	asteroidsKilledCurrentLevel = 0
 	$Player.disable()
 	$UI.setLevel(level)
 	$UI.setGetReadyVisibility(true)
@@ -57,38 +73,26 @@ func startLevel() -> void:
 	$UI.setGetReadyVisibility(false)
 	$Player.start($StartPosition.position, false)
 	gameActive = true
-	spawnAsteroids()
+	spawnAsteroids(clampi(level * ASTEROID_INCREMENT + STARTING_ASTEROIDS, STARTING_ASTEROIDS, MAX_ASTEROIDS))
 
-func spawnAsteroids() -> void:
-	var saucer: SmallSaucer = smallSaucerScene.instantiate()
-	saucer.init($Player)
-	saucer.add_to_group("asteroids")
-	saucer.connect("hit", saucerHit)
-	add_child(saucer)
-	for x in STARTING_ASTEROIDS:
+func spawnAsteroids(asteroidCount: int) -> void:
+	for x in asteroidCount:
 		var asteroid: Asteroid = largeAsteroid.instantiate()
 		var randomPosition: Vector2 = $StartPosition.position + Vector2.from_angle(randf_range(0, TAU)) * 500
 		var randomDirection := randf_range(0 , TAU)
 		asteroid.init(randomPosition, randomDirection, level)
 		asteroid.connect("hit", largeAsteroidHit)
-		asteroid.add_to_group("asteroids")
+		asteroid.add_to_group("enemies")
 		add_child(asteroid)
 
-func _process(_delta: float) -> void:
-	var asteroids := get_tree().get_nodes_in_group("asteroids")
-	if asteroids.size() == 0 && gameActive:
-		level += 1
-		$LevelFinishTimer.start()
-		$RespawnTimer.stop()
-		gameActive = false
-
+#region Asteroid Explosions + Spawning
 func largeAsteroidHit(lgAsteroid: Asteroid) -> void:
 	addPoints(POINT_VALUE["LARGE"])
 	for x in 2:
 		var mdAsteroid: Asteroid = mediumAsteroid.instantiate()
 		mdAsteroid.init(lgAsteroid.position, lgAsteroid.getVelocity().angle(), level)
 		mdAsteroid.connect("hit", mediumAsteroidHit)
-		mdAsteroid.add_to_group("asteroids")
+		mdAsteroid.add_to_group("enemies")
 		call_deferred("add_child", mdAsteroid)
 	explodeAsteroid(lgAsteroid.position, EXPLOSION_SIZE["LARGE"])
 	lgAsteroid.queue_free()
@@ -99,7 +103,7 @@ func mediumAsteroidHit(mdAsteroid: Asteroid) -> void:
 		var smAsteroid: Asteroid = smallAsteroid.instantiate()
 		smAsteroid.init(mdAsteroid.position, mdAsteroid.getVelocity().angle(), level)
 		smAsteroid.connect("hit", smallAsteroidHit)
-		smAsteroid.add_to_group("asteroids")
+		smAsteroid.add_to_group("enemies")
 		call_deferred("add_child", smAsteroid)
 	explodeAsteroid(mdAsteroid.position, EXPLOSION_SIZE["MEDIUM"])
 	mdAsteroid.queue_free()
@@ -110,9 +114,34 @@ func smallAsteroidHit(smAsteroid: Asteroid) -> void:
 	smAsteroid.queue_free()
 
 func explodeAsteroid(position: Vector2, size: int) -> void:
+	asteroidsKilledCurrentLevel += 1
+	spawnSaucerIfNeeded()
 	var explosion: Explosion = asteroidExplosionScene.instantiate()
 	explosion.init(position, size)
 	call_deferred("add_child", explosion)
+#endregion
+
+func spawnSaucerIfNeeded() -> void:
+	if asteroidsKilledCurrentLevel % SAUCER_KILL_REQ == 0:
+		if randi() % 2 == 0 :
+			spawnSmallSaucer()
+		else:
+			spawnLargeSaucer()
+
+func spawnSmallSaucer() -> void:
+	var saucer: SmallSaucer = smallSaucerScene.instantiate()
+	saucer.init($Player)
+	saucer.add_to_group("enemies")
+	saucer.connect("hit", saucerHit)
+	call_deferred("add_child", saucer)
+
+func spawnLargeSaucer() -> void:
+	var saucer: LargeSaucer = largeSaucerScene.instantiate()
+	$SpawnPath/SaucerSpawnLocation.progress_ratio = randf()
+	saucer.position = $SpawnPath/SaucerSpawnLocation.position
+	saucer.add_to_group("enemies")
+	saucer.connect("hit", saucerHit)
+	call_deferred("add_child", saucer)
 
 func saucerHit(saucer: Area2D) -> void:
 	addPoints(100)
@@ -138,7 +167,7 @@ func addPoints(pts: int) -> void:
 	score += ceil(pts * (1 + LEVEL_MULTIPLIER * level))
 	$UI.setScore(score)
 
-func clearAsteroids() -> void:
-	var asteroids := get_tree().get_nodes_in_group("asteroids")
+func clearEnemies() -> void:
+	var asteroids := get_tree().get_nodes_in_group("enemies")
 	for asteroid in asteroids:
 		asteroid.queue_free()
