@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://cyd745u8ajkgn"]
+[gd_scene load_steps=7 format=3 uid="uid://cyd745u8ajkgn"]
 
 [ext_resource type="Script" path="res://explosion.gd" id="1_y7ies"]
 [ext_resource type="PackedScene" uid="uid://bu3hfgweab7v6" path="res://explosion_particle.tscn" id="2_etgcr"]
+[ext_resource type="AudioStream" uid="uid://k1skxxpx7v60" path="res://audio/lg_asteroid_explosion.wav" id="3_8dau2"]
+[ext_resource type="AudioStream" uid="uid://dk86uswogtle6" path="res://audio/md_asteroid_explosion.wav" id="4_llq85"]
+[ext_resource type="AudioStream" uid="uid://ch31qm4mddrp2" path="res://audio/sm_asteroid_explosion.wav" id="5_bdr7v"]
+[ext_resource type="AudioStream" uid="uid://ci112ogpkyk5l" path="res://audio/saucer_explosion.wav" id="6_hiuyh"]
 
 [node name="Explosion" type="Node2D"]
 script = ExtResource("1_y7ies")
@@ -11,5 +15,25 @@ particleScene = ExtResource("2_etgcr")
 wait_time = 3.0
 one_shot = true
 autostart = true
+
+[node name="LargeExplosion" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("3_8dau2")
+max_distance = 5000.0
+attenuation = 1e-05
+
+[node name="MediumExplosion" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("4_llq85")
+max_distance = 5000.0
+attenuation = 1e-05
+
+[node name="SmallExplosion" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("5_bdr7v")
+max_distance = 5000.0
+attenuation = 1e-05
+
+[node name="SaucerExplosion" type="AudioStreamPlayer2D" parent="."]
+stream = ExtResource("6_hiuyh")
+max_distance = 5000.0
+attenuation = 1e-05
 
 [connection signal="timeout" from="Timer" to="." method="queue_free"]

@@ -81,8 +81,8 @@ horizontal_alignment = 1
 [node name="LivesMargin" type="MarginContainer" parent="."]
 offset_right = 237.0
 offset_bottom = 65.0
-theme_override_constants/margin_left = 12
-theme_override_constants/margin_top = 12
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 30
 
 [node name="Lives" type="HBoxContainer" parent="LivesMargin"]
 layout_mode = 2
@@ -115,7 +115,8 @@ anchor_right = 1.0
 offset_left = -245.0
 offset_bottom = 65.0
 grow_horizontal = 0
-theme_override_constants/margin_right = 12
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_right = 30
 
 [node name="Level" type="Label" parent="LevelMargin"]
 visible = false

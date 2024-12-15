@@ -5,11 +5,7 @@ static var MAX_ASTEROIDS := 8
 static var ASTEROID_INCREMENT := 2
 static var SAUCER_KILL_REQ := 20
 static var STARTING_LIVES := 3
-static var EXPLOSION_SIZE: Dictionary = {
-	"LARGE": 70,
-	"MEDIUM": 50,
-	"SMALL": 30
-}
+
 static var POINT_VALUE: Dictionary = {
 	"LARGE": 10,
 	"MEDIUM": 20,
@@ -94,7 +90,7 @@ func largeAsteroidHit(lgAsteroid: Asteroid) -> void:
 		mdAsteroid.connect("hit", mediumAsteroidHit)
 		mdAsteroid.add_to_group("enemies")
 		call_deferred("add_child", mdAsteroid)
-	explodeAsteroid(lgAsteroid.position, EXPLOSION_SIZE["LARGE"])
+	explodeAsteroid(lgAsteroid.position, "LARGE")
 	lgAsteroid.queue_free()
 
 func mediumAsteroidHit(mdAsteroid: Asteroid) -> void:
@@ -105,17 +101,17 @@ func mediumAsteroidHit(mdAsteroid: Asteroid) -> void:
 		smAsteroid.connect("hit", smallAsteroidHit)
 		smAsteroid.add_to_group("enemies")
 		call_deferred("add_child", smAsteroid)
-	explodeAsteroid(mdAsteroid.position, EXPLOSION_SIZE["MEDIUM"])
+	explodeAsteroid(mdAsteroid.position, "MEDIUM")
 	mdAsteroid.queue_free()
 	
 func smallAsteroidHit(smAsteroid: Asteroid) -> void:
 	addPoints(POINT_VALUE["SMALL"])
-	explodeAsteroid(smAsteroid.position, EXPLOSION_SIZE["SMALL"])
+	explodeAsteroid(smAsteroid.position, "SMALL")
 	smAsteroid.queue_free()
 
-func explodeAsteroid(position: Vector2, size: int) -> void:
+func explodeAsteroid(position: Vector2, size: String) -> void:
 	asteroidsKilledCurrentLevel += 1
-	spawnSaucerIfNeeded()
+	call_deferred("spawnSaucerIfNeeded")
 	var explosion: Explosion = asteroidExplosionScene.instantiate()
 	explosion.init(position, size)
 	call_deferred("add_child", explosion)
@@ -133,7 +129,7 @@ func spawnSmallSaucer() -> void:
 	saucer.init($Player)
 	saucer.add_to_group("enemies")
 	saucer.connect("hit", saucerHit)
-	call_deferred("add_child", saucer)
+	add_child(saucer)
 
 func spawnLargeSaucer() -> void:
 	var saucer: LargeSaucer = largeSaucerScene.instantiate()
@@ -141,12 +137,12 @@ func spawnLargeSaucer() -> void:
 	saucer.position = $SpawnPath/SaucerSpawnLocation.position
 	saucer.add_to_group("enemies")
 	saucer.connect("hit", saucerHit)
-	call_deferred("add_child", saucer)
+	add_child(saucer)
 
 func saucerHit(saucer: Area2D) -> void:
 	addPoints(100)
 	var explosion: Explosion = asteroidExplosionScene.instantiate()
-	explosion.init(saucer.position, 50)
+	explosion.init(saucer.position, "SAUCER")
 	explosion.setColor(Color.RED)
 	call_deferred("add_child", explosion)
 	saucer.queue_free()

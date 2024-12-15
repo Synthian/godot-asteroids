@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://bgp3j0qkilgfq"]
+[gd_scene load_steps=15 format=3 uid="uid://bgp3j0qkilgfq"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_cdvds"]
 [ext_resource type="PackedScene" uid="uid://drhd4rqy7o2in" path="res://player.tscn" id="1_ii6b8"]
@@ -10,6 +10,31 @@
 [ext_resource type="PackedScene" uid="uid://dw0ik3c6ox3c6" path="res://small_saucer.tscn" id="7_fi050"]
 [ext_resource type="PackedScene" uid="uid://cii6xqlach24o" path="res://large_saucer.tscn" id="8_dv6ew"]
 [ext_resource type="PackedScene" uid="uid://4t34ma5alhnn" path="res://ui.tscn" id="8_h0iki"]
+[ext_resource type="Shader" path="res://crt.gdshader" id="9_yuk0i"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1gv85"]
+shader = ExtResource("9_yuk0i")
+shader_parameter/overlay = true
+shader_parameter/scanlines_opacity = 0.0
+shader_parameter/scanlines_width = 0.0
+shader_parameter/grille_opacity = 0.0
+shader_parameter/resolution = Vector2(1440, 1080)
+shader_parameter/pixelate = false
+shader_parameter/roll = false
+shader_parameter/roll_speed = 8.0
+shader_parameter/roll_size = 15.0
+shader_parameter/roll_variation = 1.8
+shader_parameter/distort_intensity = 0.0
+shader_parameter/noise_opacity = 0.0
+shader_parameter/noise_speed = 5.0
+shader_parameter/static_noise_intensity = 0.005
+shader_parameter/aberration = 4.75e-08
+shader_parameter/brightness = 1.4
+shader_parameter/discolor = false
+shader_parameter/warp_amount = 0.4
+shader_parameter/clip_warp = false
+shader_parameter/vignette_intensity = 0.4
+shader_parameter/vignette_opacity = 0.2
 
 [sub_resource type="Environment" id="Environment_ps3ec"]
 background_mode = 3
@@ -34,6 +59,20 @@ playerExplosionScene = ExtResource("6_8svuv")
 smallSaucerScene = ExtResource("7_fi050")
 largeSaucerScene = ExtResource("8_dv6ew")
 
+[node name="Shader" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="CRT" type="ColorRect" parent="Shader"]
+material = SubResource("ShaderMaterial_1gv85")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="UI" parent="." instance=ExtResource("8_h0iki")]
+process_mode = 3
+
 [node name="Player" parent="." instance=ExtResource("1_ii6b8")]
 visible = false
 
@@ -42,9 +81,6 @@ position = Vector2(720, 540)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_ps3ec")
-
-[node name="UI" parent="." instance=ExtResource("8_h0iki")]
-process_mode = 3
 
 [node name="LevelFinishTimer" type="Timer" parent="."]
 wait_time = 2.0
@@ -63,9 +99,9 @@ curve = SubResource("Curve2D_m8fry")
 [node name="SaucerSpawnLocation" type="PathFollow2D" parent="SpawnPath"]
 position = Vector2(-55, -36)
 
-[connection signal="hit" from="Player" to="." method="playerDeath"]
 [connection signal="gameOverFinish" from="UI" to="." method="openMainMenu"]
 [connection signal="start" from="UI" to="." method="newGame"]
+[connection signal="hit" from="Player" to="." method="playerDeath"]
 [connection signal="timeout" from="LevelFinishTimer" to="." method="newLevel"]
 [connection signal="timeout" from="ReadyTimer" to="." method="startLevel"]
 [connection signal="timeout" from="RespawnTimer" to="." method="respawn"]

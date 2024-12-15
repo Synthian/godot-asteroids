@@ -18,6 +18,12 @@ func _process(delta: float) -> void:
 		spinVelocity -= rotationSpeed
 	$VelocityComponent.spinVelocity = spinVelocity
 	
+	if Input.is_action_just_pressed("boost"):
+		$BoostSound.play()
+	
+	if Input.is_action_just_released("boost"):
+		$BoostSound.stop()
+	
 	if Input.is_action_pressed("boost"):
 		$VelocityComponent.accelerateInDirection(rotation, delta)
 		$AnimatedSprite2D.animation = "boost"
@@ -43,6 +49,8 @@ func _process(delta: float) -> void:
 func _on_area_entered(_body: Node2D) -> void:
 	self.alive = false
 	visible = false
+	$BoostSound.stop()   
+	$ExplosionSound.play()
 	var explosion: DeathExplosion = explosionScene.instantiate()
 	explosion.init(position, rotation)
 	call_deferred("add_sibling", explosion)
@@ -64,6 +72,7 @@ func start(pos: Vector2, iframes: bool) -> void:
 
 func disable() -> void:
 	$CollisionPolygon2D.set_deferred("disabled", true)
+	$BoostSound.stop()
 	alive = false
 	visible = false
 

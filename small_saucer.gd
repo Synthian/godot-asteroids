@@ -32,6 +32,7 @@ func _ready() -> void:
 			position.x = 0 - $Sprite2D.texture.get_width()
 			position.y = height
 			$VelocityComponent.linearVelocity = Vector2(1, 0) * $VelocityComponent.maxSpeed
+	$SpawnSound.play()
 
 func _process(delta: float) -> void:
 	$VelocityComponent.move(self, delta)
@@ -46,6 +47,7 @@ func changeDirection() -> void:
 
 func shoot() -> void:
 	if player:
+		$BulletSound.play()
 		var bullet: Bullet = bulletScene.instantiate()
 		bullet.initEnemy(position, (player.position - position).normalized())
 		add_sibling(bullet)

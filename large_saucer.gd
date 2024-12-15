@@ -14,6 +14,7 @@ static var Y_WRAP_PAD := 40
 @onready var screen_size: Vector2 = get_viewport_rect().size
 
 func _ready() -> void:
+	$SpawnSound.play()
 	$VelocityComponent.linearVelocity = Vector2.from_angle(randf_range(0, TAU)) * $VelocityComponent.maxSpeed
 
 func _process(delta: float) -> void:
@@ -22,6 +23,7 @@ func _process(delta: float) -> void:
 
 func shoot() -> void:
 	if position.x > 0 && position.y > 0 && position.x < screen_size.x && position.y < screen_size.y:
+		$BulletSound.play()
 		var bullet: Bullet = bulletScene.instantiate()
 		bullet.initEnemy(position, Vector2.from_angle(randf_range(0, TAU)))
 		add_sibling(bullet)
